@@ -1,0 +1,177 @@
+/*
+ * The Parser is only a proof of concept ;-) 
+ */
+
+options {
+  JAVA_UNICODE_ESCAPE = true;
+  ERROR_REPORTING = true;
+  STATIC = false;
+  COMMON_TOKEN_ACTION = false;
+  TOKEN_FACTORY = "Token";
+  JDK_VERSION = "1.5";
+  BUILD_PARSER = true;
+}
+
+PARSER_BEGIN(PuppetManifestParser)
+
+package net.puppetbeans.files.jcclexer;
+
+import java.io.*;
+
+public class PuppetManifestParser {
+
+    public PuppetManifestParser(String s) {
+        this((Reader)(new StringReader(s))); 
+    }
+
+}
+
+PARSER_END(PuppetManifestParser)
+
+/* WHITE SPACE */
+
+TOKEN :
+{
+  < WHITESPACE:
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f">
+}
+
+/* WHITE SPACE */
+/*
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+*/
+
+/* COMMENTS */
+TOKEN : {
+  <SINGLE_LINE_COMMENT: "#" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")?>
+}
+
+
+/* RESERVED WORDS AND LITERALS */
+
+TOKEN:
+{
+ <KEYWORD: (<CLASS> | <PACKAGE> <INCLUDE>)>
+ | <ATTRIBUTE: (<ENSURE> | <ABSEND> | <DEFAULT_ATTR>)>
+}
+
+TOKEN :
+{
+  <#CLASS: "class" >
+| <#INCLUDE: "include" >
+| <#PACKAGE: "package" >
+}
+
+TOKEN :
+{
+ <#ABSEND: "absend" >
+| <#ENSURE: "ensure" >
+| <#DEFAULT_ATTR: "default" >
+}
+
+
+
+/* token images */
+TOKEN: {
+        <NUMBER:       (<DIGIT>)+>
+    |   <BOOL:        ("true" | "TRUE" | "FALSE" | "false") >
+    |   <IDENTIFIER:   (<ALPHA>)+>
+    |   <PLACEHOLDER:  (<DOLLAR><LBRACE>(<ALPHA>)+<RBRACE>)>
+    |   <VARIABLE:     (<DOLLAR>(<ALPHA>)+)>
+/*    |   <HASH:         ( '['()<ALPHA>+']' )> */
+    |   <STRING:       <QUOTED>>
+    | <OPERATOR:      (<EQUALS> | <APPENDS> | <ISEQUAL> | <GREATEREQUAL> | <GREATERTHAN> | <LESSTHAN> | <LESSEQUAL> | <NOTEQUAL> | <NOT> | <COMMA> | <COLON> | <DOT> | <AT> | <LLCOLLECT> | <RRCOLLECT> | <IN_EDGE> | <OUT_EDGE> | <IN_EDGE_SUB> | <OUT_EDGE_SUB> | <LCOLLECT> | <RCOLLECT> | <SEMIC> | <QMARK> | <BACKSLASH> | <FARROW> | <PARROW> | <PLUS> | <MINUS> | <DIV> | <TIMES> | <MODULO> | <LSHIFT> | <RSHIFT> | <MATCH> | <NOMATCH> 
+                        | <QUOTEMARK1> | <QUOTEMARK2>) >
+}
+
+TOKEN: {
+        <#ALPHA:  ["A"-"Z", "a"-"z", "0"-"9", "$", "_", "."]>
+    |   <#DIGIT:  ["0"-"9"]>
+    |   <#QUOTED: ("\"" (~["\""])* "\"") | ("'" (~["'"])* "'") >
+    |   <#DOLLAR: "$" >
+}
+
+TOKEN :
+{
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+}
+
+/* OPERATORS */
+TOKEN :
+{
+ < #EQUALS: "=">
+|< #APPENDS: "+=">
+|< #ISEQUAL: "==">
+|< #GREATEREQUAL: ">=">
+|< #GREATERTHAN: ">">
+|< #LESSTHAN: "<">
+|< #LESSEQUAL: "<=">
+|< #NOTEQUAL: "!=">
+|< #NOT: "!">
+|< #COMMA: ",">
+|< #COLON: ":" >
+|< #DOT: ".">
+|< #AT: "@">
+|< #LLCOLLECT: "<<|">
+|< #RRCOLLECT: "|>>">
+|< #IN_EDGE: "->">
+|< #OUT_EDGE: "<-">
+|< #IN_EDGE_SUB: "~>">
+|< #OUT_EDGE_SUB: "<~">
+|< #LCOLLECT: "<|">
+|< #RCOLLECT: "|>">
+|< #SEMIC: ";">
+|< #QMARK:"?" >
+|< #BACKSLASH:"\\" >
+|< #FARROW: "=>">
+|< #PARROW: "+>">
+|< #PLUS: "+">
+|< #MINUS: "-">
+|< #DIV: "/">
+|< #TIMES:"*" >
+|< #MODULO: "%">
+|< #LSHIFT: "<<">
+|< #RSHIFT:">>" >
+|< #MATCH: "=~">
+|< #NOMATCH: "!~">
+|< #QUOTEMARK1: "'">
+|< #QUOTEMARK2: "\"">
+}
+
+
+ 
+/* LITERALS */
+/*
+TOKEN :
+{
+  < STRING_LITERAL:
+      ("\"" | "'")
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      ("\"" | "'")
+  >
+}
+*/
+
